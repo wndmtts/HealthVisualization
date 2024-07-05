@@ -74,7 +74,7 @@ namespace HealthVisualization.Activities
 
         private void StartLocationUpdates()
         {
-            _locationManager.RequestLocationUpdates(_locationProvider, 500, 1, this);
+            _locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
         }
 
         public void OnLocationChanged(Location location)
