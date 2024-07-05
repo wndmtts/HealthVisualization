@@ -1,11 +1,15 @@
+using AndroidX.ViewPager.Widget;
 using Firebase.Database;
 using HealthVisualization.BaseClasses;
+using AndroidX.AppCompat.App;
+using AndroidX.Fragment.App;
+using Newtonsoft.Json;
+using Android.Views;
 
 namespace HealthVisualization.Activities
 {
-
-    [Activity(Label = "LoginActivity")]
-    public class LoginActivity : Activity
+    [Activity(Label = "Login")]
+    public class LoginActivity : AppCompatActivity
     {
         protected override void OnCreate(Bundle? savedInstanceState)
         {
@@ -13,18 +17,131 @@ namespace HealthVisualization.Activities
 
             SetContentView(Resource.Layout.activity_login);
 
+            ViewPager viewPager = FindViewById<ViewPager>(Resource.Id.viewPager);
+            viewPager.Adapter = new CustomPagerAdapter(SupportFragmentManager);
+        }
+    }
 
-            Button loginButton = FindViewById<Button>(Resource.Id.buttonLogin);
 
-            // sobrecarrega o método de Click
-            loginButton.Click += LoginButton_Click;
+    public class CustomPagerAdapter : FragmentPagerAdapter
+    {
+        private readonly string[] tabTitles = { "Login", "Cadastro" };
+
+        public CustomPagerAdapter(AndroidX.Fragment.App.FragmentManager fm) : base(fm)
+        {
+
         }
 
-        private async void LoginButton_Click(object? sender, EventArgs e)
+        public override int Count => tabTitles.Length;
+
+        public override AndroidX.Fragment.App.Fragment GetItem(int position)
+        {
+            switch (position)
+            {
+                case 0:
+                    return new TabFragment(Resource.Layout.activity_login_usuario);
+                case 1:
+                    return new TabFragment(Resource.Layout.activity_cadastro_usuario);
+                default:
+                    return null;
+            }
+        }
+
+        public override Java.Lang.ICharSequence GetPageTitleFormatted(int position)
+        {
+            return new Java.Lang.String(tabTitles[position]);
+        }
+    }
+
+    public class TabFragment : AndroidX.Fragment.App.Fragment
+    {
+        private readonly int layoutResourceId;
+
+        public TabFragment(int layoutResourceId)
+        {
+            this.layoutResourceId = layoutResourceId;
+        }
+
+        public override Android.Views.View OnCreateView(Android.Views.LayoutInflater inflater, Android.Views.ViewGroup container, Bundle savedInstanceState)
+        {
+            View view = inflater.Inflate(layoutResourceId, container, false);
+
+            Button loginButton = view.FindViewById<Button>(Resource.Id.buttonLogin);
+            if (loginButton != null)
+            {
+                loginButton.Click += (s, e) => LoginButton_Click(s, e, view);
+            }
+
+            Button cadastrarUsuarioButton = view.FindViewById<Button>(Resource.Id.buttonCadastrar);
+            if (cadastrarUsuarioButton != null)
+            {
+                cadastrarUsuarioButton.Click += (s, e) => CadastraUsuarioAsync(s, e, view);
+            }
+
+            return view;
+        }
+
+
+        private async void CadastraUsuarioAsync(object? sender, EventArgs e, View view)
+        {
+
+            var nomeUser = view.FindViewById<EditText>(Resource.Id.editTextNome);
+            var emailUser = view.FindViewById<EditText>(Resource.Id.editTextEmail);
+            var senhaUser = view.FindViewById<EditText>(Resource.Id.editTextSenha);
+            var confSenhaUser = view.FindViewById<EditText>(Resource.Id.editTextConfirmarSenha);
+
+
+            if (senhaUser?.Text == confSenhaUser?.Text)
+            {
+                // Crie um objeto com os dados que deseja salvar
+                var dados = new
+                {
+                    Nome = nomeUser?.Text,
+                    Senha = senhaUser?.Text,
+                    Email = emailUser?.Text
+                };
+
+                try
+                {
+                    string jsonDados = JsonConvert.SerializeObject(dados);
+
+                    FirebaseClient firebase = new FirebaseClient("https://ifpr-alerts-default-rtdb.firebaseio.com/");
+                    var result = await firebase
+                        .Child("usuarios")
+                        .PostAsync(jsonDados);
+
+                    if (result != null)
+                    {
+                        // reinicia valores dos campos da tela
+                        nomeUser.Text = "";
+                        senhaUser.Text = "";
+                        emailUser.Text = "";
+                        confSenhaUser.Text = "";
+
+                        Toast.MakeText(Activity, "Cadastrado realizado com sucesso!", ToastLength.Short)?.Show();
+                    }
+                    else
+                    {
+                        Toast.MakeText(Activity, "O cadastro não pôde ser concluído!", ToastLength.Short)?.Show();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro: {ex.Message}");
+                }
+            }
+            else
+            {
+                Toast.MakeText(Activity, "As senha estão diferentes!", ToastLength.Short)?.Show();
+            }
+        }
+
+        private async void LoginButton_Click(object? sender, EventArgs e, View view)
         {
             // captura os valores do campos de texto da tela
-            var email = FindViewById<EditText>(Resource.Id.editTextEmail)?.Text;
-            var password = FindViewById<EditText>(Resource.Id.editTextPassword)?.Text;
+            var email = view.FindViewById<EditText>(Resource.Id.editTextEmail)?.Text;
+            var password = view.FindViewById<EditText>(Resource.Id.editTextPassword)?.Text;
 
             //Conecta com o banco de dados Realitme Database do Firebase
             FirebaseClient firebase = new FirebaseClient("https://ifpr-alerts-default-rtdb.firebaseio.com/");
@@ -40,21 +157,19 @@ namespace HealthVisualization.Activities
 
             if (usuario != null)
             {
-                if(usuario.Senha == password)
+                if (usuario.Senha == password)
                 {
-                    Toast.MakeText(this, "Usuário logado com sucesso!", ToastLength.Short)?.Show();
-                    Finish();
+                    Toast.MakeText(Activity, "Usuário logado com sucesso!", ToastLength.Short)?.Show();                    
                 }
                 else
                 {
-                    Toast.MakeText(this, "Senha incorreta. Digite novamente!", ToastLength.Short)?.Show();
+                    Toast.MakeText(Activity, "Senha incorreta. Digite novamente!", ToastLength.Short)?.Show();
                 }
             }
             else
             {
-                Toast.MakeText(this, "Usuário não encontrado!", ToastLength.Short)?.Show();
+                Toast.MakeText(Activity, "Usuário não encontrado!", ToastLength.Short)?.Show();
             }
         }
-        
     }
 }
