@@ -21,5 +21,10 @@ namespace HealthVisualization
                 StartActivity(intent);
             }
         }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+        }
     }
 }

@@ -119,6 +119,8 @@ namespace HealthVisualization.Activities
                         confSenhaUser.Text = "";
 
                         Toast.MakeText(Activity, "Cadastrado realizado com sucesso!", ToastLength.Short)?.Show();
+
+                        
                     }
                     else
                     {
@@ -159,7 +161,8 @@ namespace HealthVisualization.Activities
             {
                 if (usuario.Senha == password)
                 {
-                    Toast.MakeText(Activity, "Usuário logado com sucesso!", ToastLength.Short)?.Show();                    
+                    Toast.MakeText(Activity, "Usuário logado com sucesso!", ToastLength.Short)?.Show();
+                    Activity.Finish();
                 }
                 else
                 {
