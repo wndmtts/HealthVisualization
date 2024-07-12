@@ -1,8 +1,14 @@
 <resources>
-    <string name="app_name">Health Visualization App</string>
-    <string name="app_text">Hello, Android!</string>
+  <string name="app_name">Health Visualization App</string>
+  <string name="app_text">Hello, Android!</string>
 
-    <string name="login_digite_login">Digite o login</string>
-    <string name="login_digite_senha">Digite a senha</string>
-    <string name="login_button_efetuar_login">Fazer Login</string>
+  <string name="login_digite_login">Digite o login</string>
+  <string name="login_digite_senha">Digite a senha</string>
+  <string name="login_button_efetuar_login">Fazer Login</string>
+
+
+  <!-- TODO: Alterar o link do Firebase para o que você criou -->
+  <string name="firebase_url">https://health-visualization-default-rtdb.firebaseio.com/</string>
+
+
 </resources>

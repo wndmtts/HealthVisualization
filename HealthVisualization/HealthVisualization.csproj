@@ -11,6 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\layout\activity_cadastro_usuario.xml" />
+    <None Remove="Resources\layout\activity_localizacao.xml" />
     <None Remove="Resources\layout\activity_login.xml" />
     <None Remove="Resources\layout\activity_login_usuario.xml" />
     <None Remove="Resources\values\colors.xml" />
@@ -24,5 +25,6 @@
     <PackageReference Include="Xamarin.AndroidX.Core" Version="1.13.0.1" />
     <PackageReference Include="Xamarin.Essentials" Version="1.8.1" />
     <PackageReference Include="Xamarin.Google.Android.Material" Version="1.10.0.4" />
+    <PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="117.0.0" />
   </ItemGroup>
 </Project>

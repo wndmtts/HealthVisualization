@@ -1,3 +1,5 @@
+using Android.App;
+using Android.OS;
 using AndroidX.ViewPager.Widget;
 using Firebase.Database;
 using HealthVisualization.BaseClasses;
@@ -25,6 +27,7 @@ namespace HealthVisualization.Activities
 
     public class CustomPagerAdapter : FragmentPagerAdapter
     {
+        // TODO: Defina novos nomes para as tabs
         private readonly string[] tabTitles = { "Login", "Cadastro" };
 
         public CustomPagerAdapter(AndroidX.Fragment.App.FragmentManager fm) : base(fm)
@@ -84,7 +87,7 @@ namespace HealthVisualization.Activities
 
         private async void CadastraUsuarioAsync(object? sender, EventArgs e, View view)
         {
-
+            // TODO: Adicione aqui os novos campos que foram criados
             var nomeUser = view.FindViewById<EditText>(Resource.Id.editTextNome);
             var emailUser = view.FindViewById<EditText>(Resource.Id.editTextEmail);
             var senhaUser = view.FindViewById<EditText>(Resource.Id.editTextSenha);
@@ -105,7 +108,13 @@ namespace HealthVisualization.Activities
                 {
                     string jsonDados = JsonConvert.SerializeObject(dados);
 
-                    FirebaseClient firebase = new FirebaseClient("https://ifpr-alerts-default-rtdb.firebaseio.com/");
+                    // Busca a URL do Firebase do arquivo strings.xml
+                    string firebaseUrl = Resources.GetString(Resource.String.firebase_url);
+
+                    //Conecta com o banco de dados Realitme Database do Firebase
+                    FirebaseClient firebase = new FirebaseClient(firebaseUrl);
+
+                    // TODO: Defina uma nova raiz para o banco de dados. Exemplo: pessoas
                     var result = await firebase
                         .Child("usuarios")
                         .PostAsync(jsonDados);
@@ -118,7 +127,7 @@ namespace HealthVisualization.Activities
                         emailUser.Text = "";
                         confSenhaUser.Text = "";
 
-                        Toast.MakeText(Activity, "Cadastrado realizado com sucesso!", ToastLength.Short)?.Show();
+                        Toast.MakeText(Activity, "Cadastrado realizado com sucesso!", ToastLength.Short)?.Show();                        
                     }
                     else
                     {
@@ -143,9 +152,13 @@ namespace HealthVisualization.Activities
             var email = view.FindViewById<EditText>(Resource.Id.editTextEmail)?.Text;
             var password = view.FindViewById<EditText>(Resource.Id.editTextPassword)?.Text;
 
-            //Conecta com o banco de dados Realitme Database do Firebase
-            FirebaseClient firebase = new FirebaseClient("https://ifpr-alerts-default-rtdb.firebaseio.com/");
+            // Busca a URL do Firebase do arquivo strings.xml
+            string firebaseUrl = Resources.GetString(Resource.String.firebase_url);
 
+            //Conecta com o banco de dados Realitme Database do Firebase
+            FirebaseClient firebase = new FirebaseClient(firebaseUrl);
+
+            // TODO: Defina uma nova raiz para o banco de dados. Exemplo: pessoas
             var usuario = (await firebase
                 .Child("usuarios")
                 .OnceAsync<Usuario>()).Select(item => new Usuario
@@ -159,7 +172,10 @@ namespace HealthVisualization.Activities
             {
                 if (usuario.Senha == password)
                 {
-                    Toast.MakeText(Activity, "Usuário logado com sucesso!", ToastLength.Short)?.Show();                    
+                    MainActivity._usuario = usuario;
+
+                    Toast.MakeText(Activity, "Usuário logado com sucesso!", ToastLength.Short)?.Show();
+                    Activity?.Finish(); // Fecha a Activity pai a partir do Fragment
                 }
                 else
                 {

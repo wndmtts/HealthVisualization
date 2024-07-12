@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.viewpager.widget.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.viewpager.widget.ViewPager
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/viewPager"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <!-- TODO: Definir uma nova cor e mover de fundo para res/values/colors.xml -->
+    <!-- TODO: Definir uma nova cor e mover a cor do texto para res/values/colors.xml -->
+    <!-- TODO: Mover o textSize para res/values/dimens.xml -->
     <androidx.viewpager.widget.PagerTabStrip
         android:id="@+id/pagerTabStrip"
         android:layout_width="match_parent"
@@ -13,6 +18,8 @@
         android:textColor="#FFFFFF"
         android:paddingTop="16dp"
         android:paddingBottom="16dp" />
+
+
 
 </androidx.viewpager.widget.ViewPager>
 
