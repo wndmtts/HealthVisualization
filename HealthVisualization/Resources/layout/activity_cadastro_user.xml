@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <EditText
+        android:inputType="textPersonName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Digite o nome"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/editTextNomeUser" />
+
+
+    <EditText
+        android:inputType="textEmailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Digite o email"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/editTextEmailUser" />
+
+    <EditText
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Digite a senha"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/editTextPassUser" />
+
+    <EditText
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirme a senha"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/editTextConfirmPassUser" />
+    <Button
+        android:text="Cadastrar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonCadastrarUser" />
+
+
+
+
+</LinearLayout>

@@ -15,11 +15,11 @@ namespace HealthVisualization
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
 
-            if(_usuario == null)
+            if (_usuario == null)
             {
                 Intent intent = new Intent(this, typeof(LoginActivity));
                 StartActivity(intent);
-            }          
+            }
         }
     }
 }

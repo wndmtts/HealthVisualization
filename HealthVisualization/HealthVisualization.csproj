@@ -10,6 +10,7 @@
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\layout\activity_cadastro_user.xml" />
     <None Remove="Resources\layout\activity_cadastro_usuario.xml" />
     <None Remove="Resources\layout\activity_login.xml" />
     <None Remove="Resources\layout\activity_login_usuario.xml" />

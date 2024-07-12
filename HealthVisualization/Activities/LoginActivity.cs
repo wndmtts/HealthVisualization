@@ -105,7 +105,7 @@ namespace HealthVisualization.Activities
                 {
                     string jsonDados = JsonConvert.SerializeObject(dados);
 
-                    FirebaseClient firebase = new FirebaseClient("https://ifpr-alerts-default-rtdb.firebaseio.com/");
+                    FirebaseClient firebase = new FirebaseClient("https://health-visualization-default-rtdb.firebaseio.com/");
                     var result = await firebase
                         .Child("usuarios")
                         .PostAsync(jsonDados);
@@ -144,7 +144,7 @@ namespace HealthVisualization.Activities
             var password = view.FindViewById<EditText>(Resource.Id.editTextPassword)?.Text;
 
             //Conecta com o banco de dados Realitme Database do Firebase
-            FirebaseClient firebase = new FirebaseClient("https://ifpr-alerts-default-rtdb.firebaseio.com/");
+            FirebaseClient firebase = new FirebaseClient("https://health-visualization-default-rtdb.firebaseio.com/");
 
             var usuario = (await firebase
                 .Child("usuarios")
