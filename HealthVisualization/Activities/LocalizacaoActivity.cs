@@ -22,7 +22,6 @@ namespace HealthVisualization.Activities
         private LocationManager _locationManager;
         private string _locationProvider;
         private TextView _locationTextView;
-        private Location _initialLocation;
         const int RequestLocationId = 1;
 
         private LatLng _startLocation;
@@ -32,14 +31,12 @@ namespace HealthVisualization.Activities
         private Action _updatePositionAction;
         private Marker _currentMarker;
 
-
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_localizacao);
 
             _locationTextView = FindViewById<TextView>(Resource.Id.locationTextView);
-
 
             if (ContextCompat.CheckSelfPermission(this, Android.Manifest.Permission.AccessFineLocation) != Android.Content.PM.Permission.Granted)
             {
@@ -67,26 +64,20 @@ namespace HealthVisualization.Activities
                         else
                         {
                             // Permissão negada, você pode mostrar uma mensagem ou fazer outra ação
-                            Toast.MakeText(this, "Permissão de localização foi negada.", ToastLength.Short).Show();
+                            Toast.MakeText(this, "Permissão de localização foi negada.", ToastLength.Short).Show(); // TODO: Definir uma nova mensagem toast
                         }
                     }
                     break;
             }
         }
 
-
         private void InitializeMap()
         {
             var mapFragment = (SupportMapFragment)SupportFragmentManager.FindFragmentById(Resource.Id.map);
             mapFragment.GetMapAsync(this);
 
-            _initialLocation = new Location(_locationProvider);
-            _initialLocation.Latitude = -25.0884;
-            _initialLocation.Longitude = -50.0978;
-
-
-            _startLocation = new LatLng(-23.550520, -46.633308); // Início do percurso (São Paulo, Brasil)
-            _route = GenerateRoute(_startLocation, 5000, 50); // Gera uma rota de 5km com 50 pontos
+            _startLocation = new LatLng(-23.550520, -46.633308); // Início do percurso (São Paulo, Brasil) // TODO: Definir um novo ponto de início da rota
+            _route = GenerateRoute(_startLocation, 5000, 50); // Gera uma rota de 5km com 50 pontos // TODO: Definir uma nova rota
 
             _handler = new Handler();
             _updatePositionAction = new Action(UpdatePosition);
@@ -115,7 +106,7 @@ namespace HealthVisualization.Activities
             OnLocationChanged(location);
 
             // Agenda a próxima atualização
-            _handler.PostDelayed(_updatePositionAction, 1000);
+            _handler.PostDelayed(_updatePositionAction, 1000); // TODO: Definir um novo intervalo de tempo de atualização da rota
         }
 
         private List<LatLng> GenerateRoute(LatLng startLocation, double totalDistanceMeters, int points)
@@ -148,7 +139,7 @@ namespace HealthVisualization.Activities
             _map.MyLocationEnabled = true;
 
             _locationManager = (LocationManager)GetSystemService(LocationService);
-            _locationProvider = LocationManager.GpsProvider;  
+            _locationProvider = LocationManager.GpsProvider;
 
             if (_locationManager.IsProviderEnabled(_locationProvider))
             {
@@ -156,17 +147,16 @@ namespace HealthVisualization.Activities
             }
             else
             {
-                Toast.MakeText(this, "GPS is not enabled", ToastLength.Short).Show();
+                Toast.MakeText(this, "GPS is not enabled", ToastLength.Short).Show(); // TODO: Definir uma nova mensagem toast
             }
         }
-
 
         private void StartLocationUpdates()
         {
             //_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
 
             // Inicia a atualização das posições
-            _handler.PostDelayed(_updatePositionAction, 1000);
+            _handler.PostDelayed(_updatePositionAction, 1000); // TODO: Definir um novo intervalo de tempo de atualização da rota
         }
 
         public void OnLocationChanged(Location location)
@@ -186,7 +176,7 @@ namespace HealthVisualization.Activities
                     .SetIcon(BitmapDescriptorFactory.DefaultMarker(BitmapDescriptorFactory.HueBlue)));
 
                 // Atualiza o texto com a latitude e longitude atual
-                _locationTextView.Text = $"Latitude: {location.Latitude}, Longitude: {location.Longitude}";
+                _locationTextView.Text = $"Latitude: {location.Latitude}, Longitude: {location.Longitude}"; // TODO: Definir um novo texto do locationTextView
             }
         }
 
@@ -194,5 +184,4 @@ namespace HealthVisualization.Activities
         public void OnProviderEnabled(string provider) { }
         public void OnStatusChanged(string provider, [GeneratedEnum] Availability status, Bundle extras) { }
     }
-    }
-
+}
