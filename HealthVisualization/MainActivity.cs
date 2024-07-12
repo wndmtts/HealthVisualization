@@ -14,8 +14,6 @@ namespace HealthVisualization
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
-            Intent intent = new Intent(this, typeof(LocalizacaoActivity));
-            StartActivity(intent);
         }
 
         private void DefineActivityExibicao()
@@ -35,7 +33,7 @@ namespace HealthVisualization
         protected override void OnResume()
         {
             base.OnResume();
-            //DefineActivityExibicao();
+            DefineActivityExibicao();
         }
 
     }

@@ -11,6 +11,7 @@ using Android.Gms.Maps.Model;
 using Android.Content;
 using Java.Security;
 using Android.Content.PM;
+using Android.Media;
 
 namespace HealthVisualization.Activities
 {
@@ -23,6 +24,14 @@ namespace HealthVisualization.Activities
         private TextView _locationTextView;
         private Location _initialLocation;
         const int RequestLocationId = 1;
+
+        private LatLng _startLocation;
+        private List<LatLng> _route;
+        private int _currentIndex;
+        private Handler _handler;
+        private Action _updatePositionAction;
+        private Marker _currentMarker;
+
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -42,10 +51,95 @@ namespace HealthVisualization.Activities
             }
         }
 
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        {
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            switch (requestCode)
+            {
+                case RequestLocationId:
+                    {
+                        if (grantResults.Length > 0 && grantResults[0] == Android.Content.PM.Permission.Granted)
+                        {
+                            // Permissão concedida
+                            InitializeMap();
+                        }
+                        else
+                        {
+                            // Permissão negada, você pode mostrar uma mensagem ou fazer outra ação
+                            Toast.MakeText(this, "Permissão de localização foi negada.", ToastLength.Short).Show();
+                        }
+                    }
+                    break;
+            }
+        }
+
+
         private void InitializeMap()
         {
             var mapFragment = (SupportMapFragment)SupportFragmentManager.FindFragmentById(Resource.Id.map);
             mapFragment.GetMapAsync(this);
+
+            _initialLocation = new Location(_locationProvider);
+            _initialLocation.Latitude = -25.0884;
+            _initialLocation.Longitude = -50.0978;
+
+
+            _startLocation = new LatLng(-23.550520, -46.633308); // Início do percurso (São Paulo, Brasil)
+            _route = GenerateRoute(_startLocation, 5000, 50); // Gera uma rota de 5km com 50 pontos
+
+            _handler = new Handler();
+            _updatePositionAction = new Action(UpdatePosition);
+        }
+
+        private void UpdatePosition()
+        {
+            if (_route == null || _route.Count == 0)
+                return;
+
+            if (_currentIndex >= _route.Count)
+            {
+                _currentIndex = 0; // Reinicia o percurso
+            }
+
+            LatLng newLocation = _route[_currentIndex];
+            _currentIndex++;
+
+            Location location = new Location("fake_provider")
+            {
+                Latitude = newLocation.Latitude,
+                Longitude = newLocation.Longitude,
+                Accuracy = 1
+            };
+
+            OnLocationChanged(location);
+
+            // Agenda a próxima atualização
+            _handler.PostDelayed(_updatePositionAction, 1000);
+        }
+
+        private List<LatLng> GenerateRoute(LatLng startLocation, double totalDistanceMeters, int points)
+        {
+            List<LatLng> route = new List<LatLng>();
+            double distancePerPoint = totalDistanceMeters / points;
+
+            Random random = new Random();
+            double lat = startLocation.Latitude;
+            double lng = startLocation.Longitude;
+
+            for (int i = 0; i < points; i++)
+            {
+                // Gera pequenos deslocamentos aleatórios
+                double deltaLat = (random.NextDouble() - 0.5) * 0.001;
+                double deltaLng = (random.NextDouble() - 0.5) * 0.001;
+
+                lat += deltaLat;
+                lng += deltaLng;
+
+                route.Add(new LatLng(lat, lng));
+            }
+
+            return route;
         }
 
         public void OnMapReady(GoogleMap googleMap)
@@ -54,16 +148,11 @@ namespace HealthVisualization.Activities
             _map.MyLocationEnabled = true;
 
             _locationManager = (LocationManager)GetSystemService(LocationService);
-            _locationProvider = LocationManager.GpsProvider;
-            _initialLocation = new Location(_locationProvider);
-            _initialLocation.Latitude = -25.0884;
-            _initialLocation.Longitude = -50.0978;
+            _locationProvider = LocationManager.GpsProvider;  
 
             if (_locationManager.IsProviderEnabled(_locationProvider))
             {
-                //_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
                 StartLocationUpdates();
-                OnLocationChanged(_initialLocation);
             }
             else
             {
@@ -74,7 +163,10 @@ namespace HealthVisualization.Activities
 
         private void StartLocationUpdates()
         {
-            _locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
+            //_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
+
+            // Inicia a atualização das posições
+            _handler.PostDelayed(_updatePositionAction, 1000);
         }
 
         public void OnLocationChanged(Location location)
@@ -83,7 +175,15 @@ namespace HealthVisualization.Activities
             {
                 LatLng userLocation = new LatLng(location.Latitude, location.Longitude);
                 _map.AnimateCamera(CameraUpdateFactory.NewLatLngZoom(userLocation, 15));
-                _map.AddMarker(new MarkerOptions().SetPosition(userLocation).SetTitle("You are here"));
+
+                // Remove o marcador atual, se houver
+                _currentMarker?.Remove();
+
+                // Adiciona um novo marcador e armazena a referência
+                _currentMarker = _map.AddMarker(new MarkerOptions()
+                    .SetPosition(userLocation)
+                    .SetTitle("You are here")
+                    .SetIcon(BitmapDescriptorFactory.DefaultMarker(BitmapDescriptorFactory.HueBlue)));
 
                 // Atualiza o texto com a latitude e longitude atual
                 _locationTextView.Text = $"Latitude: {location.Latitude}, Longitude: {location.Longitude}";

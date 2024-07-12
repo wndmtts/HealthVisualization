@@ -107,7 +107,12 @@ namespace HealthVisualization.Activities
                 {
                     string jsonDados = JsonConvert.SerializeObject(dados);
 
-                    FirebaseClient firebase = new FirebaseClient("https://ifpr-alerts-default-rtdb.firebaseio.com/");
+                    // Busca a URL do Firebase do arquivo strings.xml
+                    string firebaseUrl = Resources.GetString(Resource.String.firebase_url);
+
+                    //Conecta com o banco de dados Realitme Database do Firebase
+                    FirebaseClient firebase = new FirebaseClient(firebaseUrl);
+
                     var result = await firebase
                         .Child("usuarios")
                         .PostAsync(jsonDados);
@@ -145,8 +150,11 @@ namespace HealthVisualization.Activities
             var email = view.FindViewById<EditText>(Resource.Id.editTextEmail)?.Text;
             var password = view.FindViewById<EditText>(Resource.Id.editTextPassword)?.Text;
 
+            // Busca a URL do Firebase do arquivo strings.xml
+            string firebaseUrl = Resources.GetString(Resource.String.firebase_url);
+
             //Conecta com o banco de dados Realitme Database do Firebase
-            FirebaseClient firebase = new FirebaseClient("https://ifpr-alerts-default-rtdb.firebaseio.com/");
+            FirebaseClient firebase = new FirebaseClient(firebaseUrl);
 
             var usuario = (await firebase
                 .Child("usuarios")
