@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     android:paddingVertical="@dimen/inner_frame_layout_vertical_padding"
     android:paddingHorizontal="@dimen/inner_frame_layout_horizontal_padding">
+    
+    <!-- TODO: Adicionar hint para "Digite aqui o nome" nos arquivos de valores -->
     <EditText
         android:inputType="textAutoComplete"
         android:layout_width="match_parent"
@@ -14,6 +16,8 @@
         android:minWidth="25px"
         android:minHeight="25px"
         android:id="@+id/editTextNome" />
+
+    <!-- TODO: Adicionar hint para "Digite aqui o sobrenome" nos arquivos de valores -->
     <EditText
         android:inputType="textAutoComplete"
         android:layout_width="match_parent"
@@ -22,8 +26,6 @@
         android:minWidth="25px"
         android:minHeight="25px"
         android:id="@+id/editTextSobrenome" />
-
-    <!-- TODO: Adicionar hint para "Digite aqui o nome" nos arquivos de valores -->
 
     <!-- TODO: Adicionar hint para "Digite aqui o email" nos arquivos de valores -->
     <EditText
